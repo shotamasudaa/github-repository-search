@@ -1,8 +1,24 @@
-type Order = "desc" | "asc";
+export type RepositorySort =
+	| "stars"
+	| "forks"
+	| "help-wanted-issues"
+	| "updated";
+
+export type Order = "desc" | "asc";
+
+export type SortOption =
+	| "stars-desc"
+	| "stars-asc"
+	| "forks-desc"
+	| "forks-asc"
+	| "updated-desc"
+	| "updated-asc";
+
+export type PerPage = 10 | 20 | 50 | 100;
 
 export type SearchRepositoriesParams = {
 	query: string;
-	sort?: string;
+	sort?: RepositorySort;
 	order?: Order;
 	perPage?: number;
 	page?: number;
