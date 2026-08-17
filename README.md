@@ -12,6 +12,8 @@ GitHub 上の公開リポジトリをキーワードで検索できる Web ア�
   - 最終更新日時
 - 1 ページあたりの表示件数変更
 - 検索条件・ページごとの結果キャッシュ
+- GitHub Search API の取得上限（1,000 件）の明示
+- 不完全な検索結果に対する警告表示
 
 ## Tech Stack
 
@@ -21,6 +23,8 @@ GitHub 上の公開リポジトリをキーワードで検索できる Web ア�
 - TanStack Query
 - CSS Modules
 - Biome
+- Vitest
+- React Testing Library
 - GitHub REST API
 
 ## Setup
@@ -58,7 +62,20 @@ pnpm check
 
 # Apply formatting
 pnpm format
+
+# Run tests in watch mode
+pnpm test
+
+# Run tests once
+pnpm test:run
+
+# Generate a coverage report
+pnpm test:coverage
 ```
+
+### Testing
+
+Vitest と React Testing Library を使用して、API リクエスト、フォーム操作、ページネーション、および検索画面の主要な状態をテストしています。カバレッジレポートは `coverage/` に生成されます（Git 管理対象外）。
 
 ## API
 
@@ -69,6 +86,8 @@ GET /search/repositories
 ```
 
 このアプリケーションは認証なしで GitHub API を呼び出します。そのため、API のレート制限に達した場合は検索に失敗することがあります。
+
+Search API は 1 クエリにつき最大 1,000 件まで取得できます。該当件数が上限を超える場合、アプリケーションはページネーションを 1,000 件までに制限します。
 
 ## Implementation notes
 
