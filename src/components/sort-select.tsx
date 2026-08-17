@@ -1,4 +1,5 @@
 import type { SortOption } from "../types/search-repositories";
+import styles from "./sort-select.module.css";
 
 type SortSelectProps = {
 	value: SortOption;
@@ -7,9 +8,11 @@ type SortSelectProps = {
 
 export function SortSelect({ value, onSortChange }: SortSelectProps) {
 	return (
-		<label>
-			並び替え
+		<label className={styles.field}>
+			<span className={styles.label}>並び替え</span>
+
 			<select
+				className={styles.select}
 				value={value}
 				onChange={(event) => onSortChange(event.target.value as SortOption)}
 			>

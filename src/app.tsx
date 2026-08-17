@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styles from "./app.module.css";
 import { Pagination } from "./components/pagination";
 import { PerPageSelect } from "./components/per-page-select";
 import { RepositoryList } from "./components/repository-list";
@@ -38,19 +39,45 @@ export function App() {
 		setPage(1);
 	};
 
+	const handlePageChange = (page: number) => {
+		setPage(page);
+
+		window.scrollTo({
+			top: 0,
+			behavior: "smooth",
+		});
+	};
+
 	return (
-		<main>
-			<h1>GitHub Repository Search</h1>
+		<main className={styles.container}>
+			<header className={styles.header}>
+				<h1 className={styles.title}>GitHub リポジトリ検索</h1>
+				<p className={styles.description}>
+					GitHub 上の公開リポジトリを検索できます。
+				</p>
+			</header>
 
 			<SearchForm onSearch={handleSearch} />
 
-			<SortSelect value={sortOption} onSortChange={handleSortChange} />
+			{data && (
+				<div className={styles.resultHeader}>
+					<p className={styles.resultCount}>
+						{data.totalCount.toLocaleString()} 件
+					</p>
 
-			<PerPageSelect value={perPage} onChange={handlePerPageChange} />
+					<div className={styles.controls}>
+						<SortSelect value={sortOption} onSortChange={handleSortChange} />
 
-			{isFetching && <p>Loading...</p>}
+						<PerPageSelect value={perPage} onChange={handlePerPageChange} />
+					</div>
+				</div>
+			)}
 
-			{isError && <p>{"error"}</p>}
+			{isFetching && <p className={styles.status}>読み込み中...</p>}
+
+			{isError && (
+				<p className={styles.error}>リポジトリの取得に失敗しました。</p>
+			)}
 
 			{data && <RepositoryList repositories={data.items} />}
 
@@ -59,7 +86,7 @@ export function App() {
 					page={page}
 					totalCount={data.totalCount}
 					perPage={perPage}
-					onPageChange={setPage}
+					onPageChange={handlePageChange}
 				/>
 			)}
 		</main>

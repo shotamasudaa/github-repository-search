@@ -1,4 +1,5 @@
 import { type SubmitEventHandler, useState } from "react";
+import styles from "./search-form.module.css";
 
 type SearchFormProps = {
 	onSearch: (query: string) => void;
@@ -18,13 +19,17 @@ export function SearchForm({ onSearch }: SearchFormProps) {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form className={styles.form} onSubmit={handleSubmit}>
 			<input
+				className={styles.input}
 				type="search"
 				value={inputValue}
 				onChange={(event) => setInputValue(event.target.value)}
+				placeholder="リポジトリを検索"
 			/>
-			<button type="submit">Search</button>
+			<button className={styles.button} type="submit">
+				検索
+			</button>
 		</form>
 	);
 }

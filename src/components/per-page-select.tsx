@@ -1,4 +1,5 @@
 import type { PerPage } from "../types/search-repositories";
+import styles from "./per-page-select.module.css";
 
 type PerPageSelectProps = {
 	value: number;
@@ -7,9 +8,11 @@ type PerPageSelectProps = {
 
 export function PerPageSelect({ value, onChange }: PerPageSelectProps) {
 	return (
-		<label>
-			表示件数
+		<label className={styles.field}>
+			<span className={styles.label}>表示件数</span>
+
 			<select
+				className={styles.select}
 				value={value}
 				onChange={(event) => onChange(Number(event.target.value) as PerPage)}
 			>

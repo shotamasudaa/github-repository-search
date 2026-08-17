@@ -1,4 +1,5 @@
 import type { Repository } from "../types/search-repositories";
+import styles from "./repository-list.module.css";
 
 type RepositoryListProps = {
 	repositories: Repository[];
@@ -6,21 +7,29 @@ type RepositoryListProps = {
 
 export function RepositoryList({ repositories }: RepositoryListProps) {
 	if (repositories.length === 0) {
-		return <p>リポジトリが見つかりませんでした。</p>;
+		return <p className={styles.empty}>リポジトリが見つかりませんでした。</p>;
 	}
 
 	return (
-		<div>
+		<div className={styles.list}>
 			{repositories.map((repository) => (
-				<article key={repository.id}>
-					<a href={repository.url} target="_blank" rel="noreferrer">
+				<article className={styles.item} key={repository.id}>
+					<a
+						className={styles.title}
+						href={repository.url}
+						target="_blank"
+						rel="noreferrer"
+					>
 						{repository.fullName}
 					</a>
 
-					{repository.description && <p>{repository.description}</p>}
+					{repository.description && (
+						<p className={styles.description}>{repository.description}</p>
+					)}
 
-					<div>
+					<div className={styles.meta}>
 						<span>★ {repository.stargazersCount}</span>
+
 						{repository.language && <span>{repository.language}</span>}
 					</div>
 				</article>
