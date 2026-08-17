@@ -27,6 +27,7 @@
 	margin: 0 0 12px;
 	color: #59636e;
 	line-height: 1.6;
+	word-break: break-word;
 }
 
 .meta {

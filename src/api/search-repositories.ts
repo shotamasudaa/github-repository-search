@@ -1,10 +1,9 @@
+import { GITHUB_API_BASE_URL } from "../constants/github";
 import type {
 	GitHubSearchRepositoriesResponse,
 	SearchRepositoriesParams,
 	SearchRepositoriesResponse,
 } from "../types/search-repositories";
-
-const GITHUB_API_BASE_URL = "https://api.github.com";
 
 export const searchRepositories = async (
 	params: SearchRepositoriesParams,

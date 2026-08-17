@@ -1,75 +1,89 @@
-# React + TypeScript + Vite
+# GitHub Repository Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GitHub 上の公開リポジトリをキーワードで検索できる Web アプリケーションです。検索結果の並び替え、ページネーション、表示件数の変更に対応しています。
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- キーワードによる公開リポジトリ検索
+- 検索結果のページネーション
+- 並び替え
+  - スター数
+  - フォーク数
+  - 最終更新日時
+- 1 ページあたりの表示件数変更
+- 検索条件・ページごとの結果キャッシュ
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- TypeScript
+- Vite
+- TanStack Query
+- CSS Modules
+- Biome
+- GitHub REST API
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Requirements
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js
+- pnpm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm dev
 ```
+
+開発サーバーの URL は、コマンド実行時に Vite が表示します。
+
+### Other commands
+
+```bash
+# Production build
+pnpm build
+
+# Preview the production build
+pnpm preview
+
+# Lint and format check
+pnpm check
+
+# Apply formatting
+pnpm format
+```
+
+## API
+
+[GitHub REST API の Search repositories エンドポイント](https://docs.github.com/rest/search/search#search-repositories)を使用しています。
+
+```http
+GET /search/repositories
+```
+
+このアプリケーションは認証なしで GitHub API を呼び出します。そのため、API のレート制限に達した場合は検索に失敗することがあります。
+
+## Implementation notes
+
+### Data fetching
+
+API 通信にはブラウザ標準の Fetch API を使用しています。利用する API が限定的であり、共通の認証処理や interceptor を必要としないため、HTTP クライアントライブラリは追加していません。
+
+### Server state
+
+サーバー状態の管理には TanStack Query を使用しています。検索条件とページごとに結果をキャッシュし、5 分間は同じ条件での不要な API リクエストを抑えます。ページ切り替え中は直前の結果を表示します。
+
+### Styling
+
+スタイリングには CSS Modules を使用しています。コンポーネント単位でスタイルのスコープを分離しつつ、小規模なアプリケーションのため CSS フレームワークは使用していません。
+
+### API response
+
+GitHub API のレスポンスは snake_case ですが、API 層でアプリケーション内部の camelCase のデータ構造へ変換しています。これにより、外部 API 固有のデータ形式を UI 層に持ち込まないようにしています。

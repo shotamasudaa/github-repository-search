@@ -5,6 +5,7 @@ import { PerPageSelect } from "./components/per-page-select";
 import { RepositoryList } from "./components/repository-list";
 import { SearchForm } from "./components/search-form";
 import { SortSelect } from "./components/sort-select";
+import { GITHUB_MAX_SEARCH_RESULTS } from "./constants/github";
 import { sortOptionMap } from "./constants/sort-options";
 import { useSearchRepositories } from "./hooks/use-search-repositories";
 import type { PerPage, SortOption } from "./types/search-repositories";
@@ -23,6 +24,12 @@ export function App() {
 		page,
 		perPage,
 	});
+
+	const accessibleResultCount = data
+		? Math.min(data.totalCount, GITHUB_MAX_SEARCH_RESULTS)
+		: 0;
+
+	const hasMoreResults = data ? data.totalCount > accessibleResultCount : false;
 
 	const handleSearch = (query: string) => {
 		setQuery(query);
@@ -62,7 +69,9 @@ export function App() {
 			{data && (
 				<div className={styles.resultHeader}>
 					<p className={styles.resultCount}>
-						{data.totalCount.toLocaleString()} 件
+						{hasMoreResults
+							? `${accessibleResultCount.toLocaleString()} 件以上（表示は最大 ${GITHUB_MAX_SEARCH_RESULTS.toLocaleString()} 件）`
+							: `${accessibleResultCount.toLocaleString()} 件`}
 					</p>
 
 					<div className={styles.controls}>
@@ -79,12 +88,18 @@ export function App() {
 				<p className={styles.error}>リポジトリの取得に失敗しました。</p>
 			)}
 
+			{data?.incompleteResults && (
+				<p className={styles.warning} role="status">
+					検索結果が不完全な可能性があります。検索条件を絞り込んでください。
+				</p>
+			)}
+
 			{data && <RepositoryList repositories={data.items} />}
 
 			{data && data.totalCount > 0 && (
 				<Pagination
 					page={page}
-					totalCount={data.totalCount}
+					totalCount={accessibleResultCount}
 					perPage={perPage}
 					onPageChange={handlePageChange}
 				/>
